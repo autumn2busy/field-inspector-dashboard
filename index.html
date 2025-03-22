@@ -1,1 +1,1246 @@
-<html><head><meta content="text/html; charset=UTF-8" http-equiv="content-type"><style type="text/css">@import url(https://themes.googleusercontent.com/fonts/css?kit=lhDjYqiy3mZ0x6ROQEUoUw);ol{margin:0;padding:0}table td,table th{padding:0}.c0{background-color:#183b4d;padding-top:0pt;padding-bottom:0pt;line-height:1.5;orphans:2;widows:2;text-align:left}.c3{color:#7ee787;font-weight:400;text-decoration:none;vertical-align:baseline;font-size:10pt;font-family:"Consolas";font-style:normal}.c2{color:#87a7b3;font-weight:400;text-decoration:none;vertical-align:baseline;font-size:10pt;font-family:"Consolas";font-style:normal}.c4{color:#d8dee9;font-weight:400;text-decoration:none;vertical-align:baseline;font-size:10pt;font-family:"Consolas";font-style:normal}.c13{padding-top:0pt;padding-bottom:0pt;line-height:1.15;orphans:2;widows:2;text-align:left}.c1{font-size:10pt;font-family:"Consolas";color:#79c0ff;font-weight:400}.c11{color:#000000;font-weight:400;font-size:11pt;font-family:"Arial"}.c9{font-size:10pt;font-family:"Consolas";color:#f99157;font-weight:400}.c5{font-size:10pt;font-family:"Consolas";color:#d8dee9;font-weight:400}.c8{font-size:10pt;font-family:"Consolas";color:#7ee787;font-weight:400}.c6{font-size:10pt;font-family:"Consolas";color:#dcdcdc;font-weight:400}.c12{background-color:#ffffff;max-width:468pt;padding:72pt 72pt 72pt 72pt}.c7{text-decoration:none;vertical-align:baseline;font-style:normal}.c10{height:11pt}.title{padding-top:0pt;color:#000000;font-size:26pt;padding-bottom:3pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}.subtitle{padding-top:0pt;color:#666666;font-size:15pt;padding-bottom:16pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}li{color:#000000;font-size:11pt;font-family:"Arial"}p{margin:0;color:#000000;font-size:11pt;font-family:"Arial"}h1{padding-top:20pt;color:#000000;font-size:20pt;padding-bottom:6pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h2{padding-top:18pt;color:#000000;font-size:16pt;padding-bottom:6pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h3{padding-top:16pt;color:#434343;font-size:14pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h4{padding-top:14pt;color:#666666;font-size:12pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h5{padding-top:12pt;color:#666666;font-size:11pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;orphans:2;widows:2;text-align:left}h6{padding-top:12pt;color:#666666;font-size:11pt;padding-bottom:4pt;font-family:"Arial";line-height:1.15;page-break-after:avoid;font-style:italic;orphans:2;widows:2;text-align:left}</style></head><body class="c12 doc-content"><p class="c0 c10"><span class="c11 c7"></span></p><p class="c0"><span class="c2"># Update the carousel to use real website URLs from our spreadsheet</span></p><p class="c0"><span class="c1">import</span><span class="c4">&nbsp;json</span></p><p class="c0"><span class="c1">import</span><span class="c4">&nbsp;random</span></p><p class="c0 c10"><span class="c4"></span></p><p class="c0"><span class="c2"># First, let&#39;s check if we have website URLs in our dataframe</span></p><p class="c0"><span class="c1">print</span><span class="c6">(</span><span class="c8">&quot;Checking for website URLs in the spreadsheet...&quot;</span><span class="c6 c7">)</span></p><p class="c0"><span class="c5">has_website_column</span><span class="c6">:</span><span class="c5">&nbsp;</span><span class="c1">bool</span><span class="c5">&nbsp;= </span><span class="c8">&#39;Website&#39;</span><span class="c5">&nbsp;</span><span class="c1">in</span><span class="c4">&nbsp;df.columns</span></p><p class="c0"><span class="c1">if</span><span class="c5">&nbsp;has_website_column</span><span class="c6 c7">:</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c2"># How many companies have website data?</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;website_counts</span><span class="c6">:</span><span class="c5">&nbsp;</span><span class="c1">int</span><span class="c5">&nbsp;= df</span><span class="c6">[</span><span class="c8">&#39;Website&#39;</span><span class="c6">]</span><span class="c5">.notna</span><span class="c6">()</span><span class="c5">.</span><span class="c1">sum</span><span class="c6 c7">()</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c1">print</span><span class="c6">(</span><span class="c5">f</span><span class="c8">&quot;Found {website_counts} companies with website data out of {len(df)} total companies&quot;</span><span class="c6 c7">)</span></p><p class="c0"><span class="c1">else</span><span class="c6 c7">:</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c1">print</span><span class="c6">(</span><span class="c8">&quot;Warning: No &#39;Website&#39; column found in the dataframe!&quot;</span><span class="c6 c7">)</span></p><p class="c0 c10"><span class="c4"></span></p><p class="c0"><span class="c2"># Sample 10 random companies with websites for the demo</span></p><p class="c0"><span class="c1">if</span><span class="c5">&nbsp;has_website_column</span><span class="c6 c7">:</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c2"># Prioritize companies with website data</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;website_mask</span><span class="c6">:</span><span class="c5">&nbsp;pd.Series = df</span><span class="c6">[</span><span class="c8">&#39;Website&#39;</span><span class="c6">]</span><span class="c5">.notna</span><span class="c6 c7">()</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;companies_with_websites_df</span><span class="c6">:</span><span class="c5">&nbsp;pd.DataFrame = df.loc</span><span class="c6">[</span><span class="c5">website_mask</span><span class="c6 c7">]</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c1">if</span><span class="c5">&nbsp;</span><span class="c1">len</span><span class="c6">(</span><span class="c5">companies_with_websites_df</span><span class="c6">)</span><span class="c5">&nbsp;&gt; </span><span class="c9">10</span><span class="c6 c7">:</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;sample_companies</span><span class="c6">:</span><span class="c5">&nbsp;pd.DataFrame = companies_with_websites_df.sample</span><span class="c6">(</span><span class="c9">10</span><span class="c6 c7">)</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c1">else</span><span class="c6 c7">:</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c2"># If fewer than 10 companies have websites, include some that don&#39;t</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;companies_with_websites_sample</span><span class="c6">:</span><span class="c4">&nbsp;pd.DataFrame = companies_with_websites_df</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;no_website_mask</span><span class="c6">:</span><span class="c5">&nbsp;pd.Series = df</span><span class="c6">[</span><span class="c8">&#39;Website&#39;</span><span class="c6">]</span><span class="c5">.isna</span><span class="c6 c7">()</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;companies_without_websites_df</span><span class="c6">:</span><span class="c5">&nbsp;pd.DataFrame = df.loc</span><span class="c6">[</span><span class="c5">no_website_mask</span><span class="c6">]</span><span class="c5">.sample</span><span class="c6">(</span><span class="c9">10</span><span class="c5">&nbsp;- </span><span class="c1">len</span><span class="c6">(</span><span class="c5">companies_with_websites_df</span><span class="c6 c7">))</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;sample_companies</span><span class="c6">:</span><span class="c5">&nbsp;pd.DataFrame = pd.concat</span><span class="c6">([</span><span class="c5">companies_with_websites_sample</span><span class="c6">,</span><span class="c5">&nbsp;companies_without_websites_df</span><span class="c6 c7">])</span></p><p class="c0"><span class="c1">else</span><span class="c6 c7">:</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;sample_companies</span><span class="c6">:</span><span class="c5">&nbsp;pd.DataFrame = df.sample</span><span class="c6">(</span><span class="c9">10</span><span class="c6 c7">)</span></p><p class="c0 c10"><span class="c4"></span></p><p class="c0"><span class="c2"># Function to clean and standardize website URLs</span></p><p class="c0"><span class="c1">def</span><span class="c5">&nbsp;_format_website_url</span><span class="c6">(</span><span class="c5">url</span><span class="c6">:</span><span class="c5">&nbsp;</span><span class="c1">str</span><span class="c6">)</span><span class="c5">&nbsp;-&gt; Optional</span><span class="c6">[</span><span class="c1">str</span><span class="c6 c7">]:</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c3">&quot;&quot;&quot;Clean and format website URL, ensuring it has http/https prefix.&quot;&quot;&quot;</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c1">if</span><span class="c5">&nbsp;pd.isna</span><span class="c6">(</span><span class="c5">url</span><span class="c6">)</span><span class="c5">&nbsp;</span><span class="c1">or</span><span class="c5">&nbsp;</span><span class="c1">not</span><span class="c5">&nbsp;url</span><span class="c6 c7">:</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c1">return</span><span class="c5">&nbsp;</span><span class="c1 c7">None</span></p><p class="c0"><span class="c4">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c5">&nbsp; &nbsp;url_str</span><span class="c6">:</span><span class="c5">&nbsp;</span><span class="c1">str</span><span class="c5">&nbsp;= </span><span class="c1">str</span><span class="c6">(</span><span class="c5">url</span><span class="c6">)</span><span class="c5">.strip</span><span class="c6 c7">()</span></p><p class="c0"><span class="c4">&nbsp; </span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c2"># If URL doesn&#39;t start with http:// or https://, add https://</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c1">if</span><span class="c5">&nbsp;</span><span class="c1">not</span><span class="c5">&nbsp;url_str.startswith</span><span class="c6">((</span><span class="c8">&#39;http://&#39;</span><span class="c6">,</span><span class="c5">&nbsp;</span><span class="c8">&#39;https://&#39;</span><span class="c6 c7">)):</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;url_str = </span><span class="c8">&#39;https://&#39;</span><span class="c4">&nbsp;+ url_str</span></p><p class="c0"><span class="c4">&nbsp; </span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c2"># Ensure URL ends with a slash for joining paths</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c1">if</span><span class="c5">&nbsp;</span><span class="c1">not</span><span class="c5">&nbsp;url_str.endswith</span><span class="c6">(</span><span class="c8">&#39;/&#39;</span><span class="c6 c7">):</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;url_str += </span><span class="c3">&#39;/&#39;</span></p><p class="c0"><span class="c4">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c1">return</span><span class="c4">&nbsp;url_str</span></p><p class="c0 c10"><span class="c4"></span></p><p class="c0"><span class="c2"># Function to create a careers URL from company website</span></p><p class="c0"><span class="c1">def</span><span class="c5">&nbsp;_get_careers_url</span><span class="c6">(</span><span class="c5">website</span><span class="c6">:</span><span class="c5">&nbsp;Optional</span><span class="c6">[</span><span class="c1">str</span><span class="c6">],</span><span class="c5">&nbsp;company_name</span><span class="c6">:</span><span class="c5">&nbsp;</span><span class="c1">str</span><span class="c6">)</span><span class="c5">&nbsp;-&gt; </span><span class="c1">str</span><span class="c6 c7">:</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c3">&quot;&quot;&quot;Create a careers/jobs URL from company website.&quot;&quot;&quot;</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;base_url</span><span class="c6">:</span><span class="c5">&nbsp;Optional</span><span class="c6">[</span><span class="c1">str</span><span class="c6">]</span><span class="c5">&nbsp;= _format_website_url</span><span class="c6">(</span><span class="c5">website</span><span class="c6">)</span><span class="c5">&nbsp;</span><span class="c1">if</span><span class="c5">&nbsp;website </span><span class="c1">else</span><span class="c5">&nbsp;</span><span class="c1 c7">None</span></p><p class="c0"><span class="c4">&nbsp; </span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c1">if</span><span class="c5">&nbsp;</span><span class="c1">not</span><span class="c5">&nbsp;base_url</span><span class="c6 c7">:</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c2"># Fallback for when we don&#39;t have a website</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c1">return</span><span class="c5">&nbsp;f</span><span class="c3">&quot;https://www.google.com/search?q={company_name.replace(&#39; &#39;, &#39;+&#39;)}+jobs+careers&quot;</span></p><p class="c0"><span class="c4">&nbsp; </span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c2"># Try common career page paths (we&#39;ll use the first one in the actual carousel)</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;career_paths</span><span class="c6">:</span><span class="c5">&nbsp;</span><span class="c1">list</span><span class="c5">&nbsp;= </span><span class="c6 c7">[</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c8">&quot;careers&quot;</span><span class="c6 c7">,</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c8">&quot;jobs&quot;</span><span class="c6 c7">,</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c8">&quot;join-our-team&quot;</span><span class="c6 c7">,</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c3">&quot;employment&quot;</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c6 c7">]</span></p><p class="c0"><span class="c4">&nbsp; </span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c2"># In a real implementation, we would check if each path exists</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c2"># For this demo, we&#39;ll use the first option</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c1">return</span><span class="c5">&nbsp;f</span><span class="c3">&quot;{base_url}{career_paths[0]}&quot;</span></p><p class="c0 c10"><span class="c4"></span></p><p class="c0"><span class="c2"># Extract job listings data for carousel with real URLs</span></p><p class="c0"><span class="c5">carousel_data</span><span class="c6">:</span><span class="c5">&nbsp;</span><span class="c1">list</span><span class="c5">&nbsp;= </span><span class="c6 c7">[]</span></p><p class="c0"><span class="c1">for</span><span class="c5">&nbsp;</span><span class="c1">_</span><span class="c6">,</span><span class="c5">&nbsp;row </span><span class="c1">in</span><span class="c5">&nbsp;sample_companies.iterrows</span><span class="c6 c7">():</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;company_name</span><span class="c6">:</span><span class="c5">&nbsp;</span><span class="c1">str</span><span class="c5">&nbsp;= </span><span class="c1">str</span><span class="c6">(</span><span class="c5">row</span><span class="c6">[</span><span class="c8">&#39;Title&#39;</span><span class="c6">])</span><span class="c5">&nbsp;</span><span class="c1">if</span><span class="c5">&nbsp;pd.notna</span><span class="c6">(</span><span class="c5">row</span><span class="c6">[</span><span class="c8">&#39;Title&#39;</span><span class="c6">])</span><span class="c5">&nbsp;</span><span class="c1">else</span><span class="c5">&nbsp;</span><span class="c3">&quot;Unknown Company&quot;</span></p><p class="c0"><span class="c4">&nbsp; </span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c2"># Get the real website URL or create a fallback</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;website_url</span><span class="c6">:</span><span class="c5">&nbsp;Optional</span><span class="c6">[</span><span class="c1">str</span><span class="c6">]</span><span class="c5">&nbsp;= row.get</span><span class="c6">(</span><span class="c8">&#39;Website&#39;</span><span class="c6">,</span><span class="c5">&nbsp;</span><span class="c1">None</span><span class="c6">)</span><span class="c5">&nbsp;</span><span class="c1">if</span><span class="c5">&nbsp;has_website_column </span><span class="c1">else</span><span class="c5">&nbsp;</span><span class="c1 c7">None</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;careers_url</span><span class="c6">:</span><span class="c5">&nbsp;</span><span class="c1">str</span><span class="c5">&nbsp;= _get_careers_url</span><span class="c6">(</span><span class="c5">website_url</span><span class="c6">,</span><span class="c5">&nbsp;company_name</span><span class="c6 c7">)</span></p><p class="c0"><span class="c4">&nbsp; </span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c1">try</span><span class="c6 c7">:</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c2"># Parse the JSON job listings</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;job_listings</span><span class="c6">:</span><span class="c5">&nbsp;</span><span class="c1">list</span><span class="c5">&nbsp;= json.loads</span><span class="c6">(</span><span class="c5">row</span><span class="c6">[</span><span class="c8">&#39;Job Listings&#39;</span><span class="c6 c7">])</span></p><p class="c0"><span class="c4">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c2"># Add company information to each job listing</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c1">for</span><span class="c5">&nbsp;job </span><span class="c1">in</span><span class="c5">&nbsp;job_listings</span><span class="c6 c7">:</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;job</span><span class="c6">[</span><span class="c8">&#39;company&#39;</span><span class="c6">]</span><span class="c4">&nbsp;= company_name</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c2"># Replace the placeholder URL with the real one</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;job</span><span class="c6">[</span><span class="c8">&#39;apply_url&#39;</span><span class="c6">]</span><span class="c4">&nbsp;= careers_url</span></p><p class="c0"><span class="c4">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c2"># Add industry if available</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c1">if</span><span class="c5">&nbsp;</span><span class="c8">&#39;Industry&#39;</span><span class="c5">&nbsp;</span><span class="c1">in</span><span class="c5">&nbsp;row </span><span class="c1">and</span><span class="c5">&nbsp;pd.notna</span><span class="c6">(</span><span class="c5">row</span><span class="c6">[</span><span class="c8">&#39;Industry&#39;</span><span class="c6 c7">]):</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;job</span><span class="c6">[</span><span class="c8">&#39;industry&#39;</span><span class="c6">]</span><span class="c5">&nbsp;= </span><span class="c1">str</span><span class="c6">(</span><span class="c5">row</span><span class="c6">[</span><span class="c8">&#39;Industry&#39;</span><span class="c6 c7">])</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;carousel_data.append</span><span class="c6">(</span><span class="c5">job</span><span class="c6 c7">)</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c1">except</span><span class="c5">&nbsp;Exception </span><span class="c1">as</span><span class="c5">&nbsp;e</span><span class="c6 c7">:</span></p><p class="c0"><span class="c5">&nbsp; &nbsp; &nbsp; &nbsp;</span><span class="c1">print</span><span class="c6">(</span><span class="c5">f</span><span class="c8">&quot;Could not parse job listings for {company_name}: {str(e)}&quot;</span><span class="c6 c7">)</span></p><p class="c0 c10"><span class="c4"></span></p><p class="c0"><span class="c2"># Shuffle the job listings for variety</span></p><p class="c0"><span class="c5">random.shuffle</span><span class="c6">(</span><span class="c5">carousel_data</span><span class="c6 c7">)</span></p><p class="c0 c10"><span class="c4"></span></p><p class="c0"><span class="c2"># Display a sample of the job listings with real URLs</span></p><p class="c0"><span class="c1">print</span><span class="c6">(</span><span class="c8">&quot;\nSample of job listings with real URLs:&quot;</span><span class="c6 c7">)</span></p><p class="c0"><span class="c1">for</span><span class="c5">&nbsp;job </span><span class="c1">in</span><span class="c5">&nbsp;carousel_data</span><span class="c6">[:</span><span class="c9">3</span><span class="c6 c7">]:</span></p><p class="c0"><span class="c5">&nbsp; &nbsp;</span><span class="c1">print</span><span class="c6">(</span><span class="c5">f</span><span class="c8">&quot;- {job[&#39;title&#39;]} at {job[&#39;company&#39;]}: {job[&#39;apply_url&#39;]}&quot;</span><span class="c6 c7">)</span></p><p class="c0 c10"><span class="c4"></span></p><p class="c0"><span class="c2"># Create the HTML carousel (same as before but with real URLs)</span></p><p class="c0"><span class="c5">html_content</span><span class="c6">:</span><span class="c5">&nbsp;</span><span class="c1">str</span><span class="c5">&nbsp;= </span><span class="c3">&quot;&quot;&quot;</span></p><p class="c0"><span class="c3">&lt;!DOCTYPE html&gt;</span></p><p class="c0"><span class="c3">&lt;html lang=&quot;en&quot;&gt;</span></p><p class="c0"><span class="c3">&lt;head&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp;&lt;meta charset=&quot;UTF-8&quot;&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp;&lt;title&gt;Job Listings Carousel Demo - Real URLs&lt;/title&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp;&lt;style&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;* {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;box-sizing: border-box;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;margin: 0;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;padding: 0;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;font-family: &#39;Arial&#39;, sans-serif;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;body {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;background-color: #f5f5f5;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;padding: 20px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.container {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;max-width: 1200px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;margin: 0 auto;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;h1 {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;text-align: center;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;margin: 30px 0;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;color: #333;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.carousel-container {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;position: relative;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;padding: 20px 60px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;overflow: hidden;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;background: white;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;border-radius: 10px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.carousel {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;display: flex;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;transition: transform 0.5s ease;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;gap: 20px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.carousel-item {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;min-width: 300px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;flex: 0 0 300px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;background: white;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;border-radius: 8px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;padding: 20px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;border: 1px solid #eee;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.job-title {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;font-size: 18px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;font-weight: bold;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;color: #2c3e50;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;margin-bottom: 5px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.company-name {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;font-size: 16px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;color: #3498db;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;margin-bottom: 10px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.industry-badge {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;display: inline-block;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;background: #e0f7fa;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;color: #0097a7;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;font-size: 12px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;padding: 3px 8px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;border-radius: 12px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;margin-bottom: 10px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.location {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;font-size: 14px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;color: #7f8c8d;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;margin-bottom: 10px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.description {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;font-size: 14px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;color: #444;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;margin-bottom: 15px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;line-height: 1.4;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.apply-button {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;display: inline-block;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;background: #3498db;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;color: white;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;padding: 8px 16px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;border-radius: 4px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;text-decoration: none;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;font-weight: bold;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;transition: background 0.3s;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.apply-button:hover {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;background: #2980b9;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.carousel-control {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;position: absolute;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;top: 50%;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;transform: translateY(-50%);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;width: 40px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;height: 40px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;background: #3498db;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;border-radius: 50%;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;display: flex;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;align-items: center;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;justify-content: center;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;color: white;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;font-size: 20px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;cursor: pointer;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;border: none;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;z-index: 10;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.carousel-control:hover {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;background: #2980b9;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.carousel-prev {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;left: 10px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.carousel-next {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;right: 10px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.carousel-pagination {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;display: flex;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;justify-content: center;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;margin-top: 20px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;gap: 10px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.pagination-dot {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;width: 10px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;height: 10px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;background: #ccc;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;border-radius: 50%;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;cursor: pointer;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;transition: background 0.3s;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.pagination-dot.active {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;background: #3498db;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;.url-note {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;text-align: center;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;margin: 20px 0;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;color: #666;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;font-style: italic;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;@media (max-width: 768px) {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;.carousel-item {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;min-width: 250px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;flex: 0 0 250px;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp;&lt;/style&gt;</span></p><p class="c0"><span class="c3">&lt;/head&gt;</span></p><p class="c0"><span class="c3">&lt;body&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp;&lt;div class=&quot;container&quot;&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;&lt;h1&gt;Field Inspector Job Listings&lt;/h1&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;&lt;p class=&quot;url-note&quot;&gt;This demo uses real company websites when available.&lt;/p&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;&lt;div class=&quot;carousel-container&quot;&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;button class=&quot;carousel-control carousel-prev&quot; id=&quot;prev&quot;&gt;&#10094;&lt;/button&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;div class=&quot;carousel&quot; id=&quot;carousel&quot;&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;!-- Job listings will be added here dynamically --&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/div&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;button class=&quot;carousel-control carousel-next&quot; id=&quot;next&quot;&gt;&#10095;&lt;/button&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;&lt;/div&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;&lt;div class=&quot;carousel-pagination&quot; id=&quot;pagination&quot;&gt;&lt;/div&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp;&lt;/div&gt;</span></p><p class="c0 c10"><span class="c4"></span></p><p class="c0"><span class="c3">&nbsp; &nbsp;&lt;script&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;// Carousel job data</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;const jobListings = JOBS_DATA_PLACEHOLDER;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;// DOM elements</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;const carousel = document.getElementById(&#39;carousel&#39;);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;const prevButton = document.getElementById(&#39;prev&#39;);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;const nextButton = document.getElementById(&#39;next&#39;);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;const paginationContainer = document.getElementById(&#39;pagination&#39;);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;// Carousel state</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;let currentIndex = 0;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;const itemsPerPage = window.innerWidth &gt; 768 ? 3 : 1;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;const totalPages = Math.ceil(jobListings.length / itemsPerPage);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;// Initialize carousel</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;function initCarousel() {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// Create job listing cards</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;jobListings.forEach(job =&gt; {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;const jobCard = document.createElement(&#39;div&#39;);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;jobCard.className = &#39;carousel-item&#39;;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;jobCard.innerHTML = `</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;div class=&quot;job-title&quot;&gt;${job.title}&lt;/div&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;div class=&quot;company-name&quot;&gt;${job.company}&lt;/div&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;${job.industry ? `&lt;div class=&quot;industry-badge&quot;&gt;${job.industry}&lt;/div&gt;` : &#39;&#39;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;div class=&quot;location&quot;&gt;${job.location}&lt;/div&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;div class=&quot;description&quot;&gt;${job.description}&lt;/div&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;a href=&quot;${job.apply_url}&quot; class=&quot;apply-button&quot; target=&quot;_blank&quot;&gt;Apply Now&lt;/a&gt;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;`;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;carousel.appendChild(jobCard);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;});</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// Create pagination dots</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;for (let i = 0; i &lt; totalPages; i++) {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;const dot = document.createElement(&#39;div&#39;);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;dot.className = &#39;pagination-dot&#39;;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (i === 0) dot.classList.add(&#39;active&#39;);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;dot.addEventListener(&#39;click&#39;, () =&gt; {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;goToPage(i);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;});</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;paginationContainer.appendChild(dot);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// Set initial position</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;updateCarousel();</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;// Update carousel position</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;function updateCarousel() {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;const offset = -currentIndex * itemsPerPage * (300 + 20); // 300px width + 20px gap</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;carousel.style.transform = `translateX(${offset}px)`;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// Update pagination dots</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;const dots = document.querySelectorAll(&#39;.pagination-dot&#39;);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;dots.forEach((dot, index) =&gt; {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;dot.classList.toggle(&#39;active&#39;, index === currentIndex);</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;});</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;// Go to specific page</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;function goToPage(index) {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;currentIndex = index;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;updateCarousel();</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;// Event listeners</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;prevButton.addEventListener(&#39;click&#39;, () =&gt; {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (currentIndex &gt; 0) {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;currentIndex--;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;updateCarousel();</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;});</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;nextButton.addEventListener(&#39;click&#39;, () =&gt; {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (currentIndex &lt; totalPages - 1) {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;currentIndex++;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;updateCarousel();</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;});</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;// Handle window resize</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;window.addEventListener(&#39;resize&#39;, () =&gt; {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;const newItemsPerPage = window.innerWidth &gt; 768 ? 3 : 1;</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (newItemsPerPage !== itemsPerPage) {</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// Reinitialize if the layout changes</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;location.reload();</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;});</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; </span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;// Initialize the carousel</span></p><p class="c0"><span class="c3">&nbsp; &nbsp; &nbsp; &nbsp;initCarousel();</span></p><p class="c0"><span class="c3">&nbsp; &nbsp;&lt;/script&gt;</span></p><p class="c0"><span class="c3">&lt;/body&gt;</span></p><p class="c0"><span class="c3">&lt;/html&gt;</span></p><p class="c0"><span class="c3">&quot;&quot;&quot;</span></p><p class="c0 c10"><span class="c4"></span></p><p class="c0"><span class="c2"># Replace the placeholder with actual JSON data</span></p><p class="c0"><span class="c5">html_content = html_content.replace</span><span class="c6">(</span><span class="c8">&#39;JOBS_DATA_PLACEHOLDER&#39;</span><span class="c6">,</span><span class="c5">&nbsp;json.dumps</span><span class="c6">(</span><span class="c5">carousel_data</span><span class="c6 c7">))</span></p><p class="c0 c10"><span class="c4"></span></p><p class="c0"><span class="c2"># Save the HTML file</span></p><p class="c0"><span class="c5">html_file_name</span><span class="c6">:</span><span class="c5">&nbsp;</span><span class="c1">str</span><span class="c5">&nbsp;= </span><span class="c3">&quot;Job_Listings_Carousel_Real_URLs.html&quot;</span></p><p class="c0"><span class="c5">html_file</span><span class="c6">:</span><span class="c5">&nbsp;FileReference = save_file</span><span class="c6">(</span><span class="c5">html_file_name</span><span class="c6">,</span><span class="c5">&nbsp;html_content.encode</span><span class="c6">(</span><span class="c8">&#39;utf-8&#39;</span><span class="c6 c7">))</span></p><p class="c0 c10"><span class="c4"></span></p><p class="c0"><span class="c1">print</span><span class="c6">(</span><span class="c5">f</span><span class="c8">&quot;\nCreated updated HTML carousel demo: {html_file_name}&quot;</span><span class="c6 c7">)</span></p><p class="c0"><span class="c1">print</span><span class="c6">(</span><span class="c5">f</span><span class="c8">&quot;The demo includes {len(carousel_data)} job listings with real URLs from company websites when available&quot;</span><span class="c6 c7">)</span></p><p class="c0"><span class="c1">print</span><span class="c6">(</span><span class="c8">&quot;For companies without websites, the &#39;Apply Now&#39; button links to a Google search for the company careers&quot;</span><span class="c6 c7">)</span></p><p class="c0 c10"><span class="c4"></span></p><p class="c10 c13"><span class="c7 c11"></span></p></body></html>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Inspector Opportunities Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .dashboard-description {
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            height: 350px;
+            position: relative;
+        }
+        
+        .chart-title {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            flex: 1;
+            margin: 0 10px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .companies-section {
+            margin-top: 30px;
+        }
+        
+        .filter-controls {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .filter-dropdown {
+            padding: 10px 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            min-width: 200px;
+        }
+        
+        .search-box {
+            padding: 10px 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            min-width: 300px;
+        }
+        
+        .company-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .company-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .company-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .company-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .company-name {
+            font-size: 18px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .company-category {
+            font-size: 12px;
+            background: #e0f7fa;
+            color: #0097a7;
+            padding: 3px 8px;
+            border-radius: 12px;
+        }
+        
+        .company-website {
+            color: #3498db;
+            text-decoration: none;
+            margin-bottom: 10px;
+            display: inline-block;
+            font-size: 14px;
+        }
+        
+        .company-website:hover {
+            text-decoration: underline;
+        }
+        
+        .company-description {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+        
+        .company-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #777;
+            margin-top: auto;
+        }
+        
+        .contractor-badge {
+            font-weight: 500;
+        }
+        
+        .contractor-badge.yes {
+            color: #27ae60;
+        }
+        
+        .contractor-badge.likely {
+            color: #f39c12;
+        }
+        
+        .contractor-badge.unknown {
+            color: #7f8c8d;
+        }
+        
+        .service-area {
+            text-align: right;
+        }
+        
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 0;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .stat-card {
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1>Field Inspector Opportunities Dashboard</h1>
+            <p class="dashboard-description">Compare opportunities across different inspection categories. Find companies that hire independent contractors for various inspection types.</p>
+        </header>
+        
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value" id="total-companies">136</div>
+                <div class="stat-label">Total Companies</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-categories">12</div>
+                <div class="stat-label">Inspection Categories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="contractor-percentage">81%</div>
+                <div class="stat-label">Hire Independent Contractors</div>
+            </div>
+        </div>
+        
+        <div class="dashboard-grid">
+            <!-- New Pie Chart of Inspection Categories -->
+            <div class="chart-container">
+                <div class="chart-title">Inspection Categories Distribution</div>
+                <canvas id="categoriesPieChart" width="463" height="310" style="display: block; box-sizing: border-box; height: 310px; width: 463px;"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Companies Hiring Contractors</div>
+                <canvas id="contractorsChart" width="463" height="310" style="display: block; box-sizing: border-box; height: 310px; width: 463px;"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Companies by Inspection Category</div>
+                <canvas id="companiesChart" width="463" height="310" style="display: block; box-sizing: border-box; height: 310px; width: 463px;"></canvas>
+            </div>
+            
+            <div class="chart-container">
+                <div class="chart-title">Contractor Opportunities by Category</div>
+                <canvas id="opportunitiesChart" width="463" height="310" style="display: block; box-sizing: border-box; height: 310px; width: 463px;"></canvas>
+            </div>
+        </div>
+        
+        <div class="companies-section">
+            <h2>Top Companies by Category</h2>
+            <div class="filter-controls">
+                <select id="category-filter" class="filter-dropdown">
+                    <option value="all">All Categories</option>
+                    <!-- Categories will be populated here -->
+                <option value="Vehicle Repossession Lot Inspections">Vehicle Repossession Lot Inspections</option><option value="Occupancy Verifications">Occupancy Verifications</option><option value="Loss Control Inspectors">Loss Control Inspectors</option><option value="OnSite Inspection Vendors">OnSite Inspection Vendors</option><option value="Virtual Inspections">Virtual Inspections</option><option value="FHA Lender Inspections">FHA Lender Inspections</option><option value="CMS Phone Call Audits">CMS Phone Call Audits</option><option value="CMS Appointments and Events Audits">CMS Appointments and Events Audits</option><option value="Merchandising Audits">Merchandising Audits</option><option value="Marketing Audits">Marketing Audits</option><option value="Mystery Shops">Mystery Shops</option><option value="I-9 Verification Services">I-9 Verification Services</option></select>
+                <select id="contractor-filter" class="filter-dropdown">
+                    <option value="all">All Companies</option>
+                    <option value="yes">Hires Contractors</option>
+                    <option value="unknown">Contractor Status Unknown</option>
+                </select>
+                <input type="text" id="company-search" placeholder="Search companies..." class="search-box">
+            </div>
+            <div class="company-list" id="company-list"><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Second To None</h3>
+                        <span class="company-category">Vehicle Repossession Lot Inspections</span>
+                    </div>
+                    <a href="https://www.second-to-none.com/texas-mystery-shopper-jobs/" target="_blank" class="company-website">https://www.second-to-none.com/texas-mystery-shopper-jobs/</a>
+                    <p class="company-description">Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Ellis Mystery Shoppers</h3>
+                        <span class="company-category">Vehicle Repossession Lot Inspections</span>
+                    </div>
+                    <a href="https://ellismysteryshopperjobs.com/" target="_blank" class="company-website">https://ellismysteryshopperjobs.com/</a>
+                    <p class="company-description">Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">all 50 states</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">BestMark</h3>
+                        <span class="company-category">Vehicle Repossession Lot Inspections</span>
+                    </div>
+                    <a href="https://www.bestmark.com/become-a-mystery-shopper/" target="_blank" class="company-website">https://www.bestmark.com/become-a-mystery-shopper/</a>
+                    <p class="company-description">BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Sinclair Customer Metrics</h3>
+                        <span class="company-category">Vehicle Repossession Lot Inspections</span>
+                    </div>
+                    
+                    <p class="company-description">Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Market Force Information</h3>
+                        <span class="company-category">Vehicle Repossession Lot Inspections</span>
+                    </div>
+                    <a href="https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/" target="_blank" class="company-website">https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/</a>
+                    <p class="company-description">Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Second To None</h3>
+                        <span class="company-category">Occupancy Verifications</span>
+                    </div>
+                    <a href="https://www.second-to-none.com/texas-mystery-shopper-jobs/" target="_blank" class="company-website">https://www.second-to-none.com/texas-mystery-shopper-jobs/</a>
+                    <p class="company-description">Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Ellis Mystery Shoppers</h3>
+                        <span class="company-category">Occupancy Verifications</span>
+                    </div>
+                    <a href="https://ellismysteryshopperjobs.com/" target="_blank" class="company-website">https://ellismysteryshopperjobs.com/</a>
+                    <p class="company-description">Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">all 50 states</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">BestMark</h3>
+                        <span class="company-category">Occupancy Verifications</span>
+                    </div>
+                    <a href="https://www.bestmark.com/become-a-mystery-shopper/" target="_blank" class="company-website">https://www.bestmark.com/become-a-mystery-shopper/</a>
+                    <p class="company-description">BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Sinclair Customer Metrics</h3>
+                        <span class="company-category">Occupancy Verifications</span>
+                    </div>
+                    
+                    <p class="company-description">Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Market Force Information</h3>
+                        <span class="company-category">Occupancy Verifications</span>
+                    </div>
+                    <a href="https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/" target="_blank" class="company-website">https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/</a>
+                    <p class="company-description">Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Second To None</h3>
+                        <span class="company-category">Loss Control Inspectors</span>
+                    </div>
+                    <a href="https://www.second-to-none.com/texas-mystery-shopper-jobs/" target="_blank" class="company-website">https://www.second-to-none.com/texas-mystery-shopper-jobs/</a>
+                    <p class="company-description">Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Ellis Mystery Shoppers</h3>
+                        <span class="company-category">Loss Control Inspectors</span>
+                    </div>
+                    <a href="https://ellismysteryshopperjobs.com/" target="_blank" class="company-website">https://ellismysteryshopperjobs.com/</a>
+                    <p class="company-description">Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">all 50 states</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">BestMark</h3>
+                        <span class="company-category">Loss Control Inspectors</span>
+                    </div>
+                    <a href="https://www.bestmark.com/become-a-mystery-shopper/" target="_blank" class="company-website">https://www.bestmark.com/become-a-mystery-shopper/</a>
+                    <p class="company-description">BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Sinclair Customer Metrics</h3>
+                        <span class="company-category">Loss Control Inspectors</span>
+                    </div>
+                    
+                    <p class="company-description">Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Market Force Information</h3>
+                        <span class="company-category">Loss Control Inspectors</span>
+                    </div>
+                    <a href="https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/" target="_blank" class="company-website">https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/</a>
+                    <p class="company-description">Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Second To None</h3>
+                        <span class="company-category">OnSite Inspection Vendors</span>
+                    </div>
+                    <a href="https://www.second-to-none.com/texas-mystery-shopper-jobs/" target="_blank" class="company-website">https://www.second-to-none.com/texas-mystery-shopper-jobs/</a>
+                    <p class="company-description">Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Ellis Mystery Shoppers</h3>
+                        <span class="company-category">OnSite Inspection Vendors</span>
+                    </div>
+                    <a href="https://ellismysteryshopperjobs.com/" target="_blank" class="company-website">https://ellismysteryshopperjobs.com/</a>
+                    <p class="company-description">Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">all 50 states</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">BestMark</h3>
+                        <span class="company-category">OnSite Inspection Vendors</span>
+                    </div>
+                    <a href="https://www.bestmark.com/become-a-mystery-shopper/" target="_blank" class="company-website">https://www.bestmark.com/become-a-mystery-shopper/</a>
+                    <p class="company-description">BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Sinclair Customer Metrics</h3>
+                        <span class="company-category">OnSite Inspection Vendors</span>
+                    </div>
+                    
+                    <p class="company-description">Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Market Force Information</h3>
+                        <span class="company-category">OnSite Inspection Vendors</span>
+                    </div>
+                    <a href="https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/" target="_blank" class="company-website">https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/</a>
+                    <p class="company-description">Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Second To None</h3>
+                        <span class="company-category">Virtual Inspections</span>
+                    </div>
+                    <a href="https://www.second-to-none.com/texas-mystery-shopper-jobs/" target="_blank" class="company-website">https://www.second-to-none.com/texas-mystery-shopper-jobs/</a>
+                    <p class="company-description">Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Ellis Mystery Shoppers</h3>
+                        <span class="company-category">Virtual Inspections</span>
+                    </div>
+                    <a href="https://ellismysteryshopperjobs.com/" target="_blank" class="company-website">https://ellismysteryshopperjobs.com/</a>
+                    <p class="company-description">Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">all 50 states</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">BestMark</h3>
+                        <span class="company-category">Virtual Inspections</span>
+                    </div>
+                    <a href="https://www.bestmark.com/become-a-mystery-shopper/" target="_blank" class="company-website">https://www.bestmark.com/become-a-mystery-shopper/</a>
+                    <p class="company-description">BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Sinclair Customer Metrics</h3>
+                        <span class="company-category">Virtual Inspections</span>
+                    </div>
+                    
+                    <p class="company-description">Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Market Force Information</h3>
+                        <span class="company-category">Virtual Inspections</span>
+                    </div>
+                    <a href="https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/" target="_blank" class="company-website">https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/</a>
+                    <p class="company-description">Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Second To None</h3>
+                        <span class="company-category">FHA Lender Inspections</span>
+                    </div>
+                    <a href="https://www.second-to-none.com/texas-mystery-shopper-jobs/" target="_blank" class="company-website">https://www.second-to-none.com/texas-mystery-shopper-jobs/</a>
+                    <p class="company-description">Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Ellis Mystery Shoppers</h3>
+                        <span class="company-category">FHA Lender Inspections</span>
+                    </div>
+                    <a href="https://ellismysteryshopperjobs.com/" target="_blank" class="company-website">https://ellismysteryshopperjobs.com/</a>
+                    <p class="company-description">Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">all 50 states</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">BestMark</h3>
+                        <span class="company-category">FHA Lender Inspections</span>
+                    </div>
+                    <a href="https://www.bestmark.com/become-a-mystery-shopper/" target="_blank" class="company-website">https://www.bestmark.com/become-a-mystery-shopper/</a>
+                    <p class="company-description">BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Sinclair Customer Metrics</h3>
+                        <span class="company-category">FHA Lender Inspections</span>
+                    </div>
+                    
+                    <p class="company-description">Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Market Force Information</h3>
+                        <span class="company-category">FHA Lender Inspections</span>
+                    </div>
+                    <a href="https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/" target="_blank" class="company-website">https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/</a>
+                    <p class="company-description">Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Second To None</h3>
+                        <span class="company-category">CMS Phone Call Audits</span>
+                    </div>
+                    <a href="https://www.second-to-none.com/texas-mystery-shopper-jobs/" target="_blank" class="company-website">https://www.second-to-none.com/texas-mystery-shopper-jobs/</a>
+                    <p class="company-description">Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Ellis Mystery Shoppers</h3>
+                        <span class="company-category">CMS Phone Call Audits</span>
+                    </div>
+                    <a href="https://ellismysteryshopperjobs.com/" target="_blank" class="company-website">https://ellismysteryshopperjobs.com/</a>
+                    <p class="company-description">Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">all 50 states</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">BestMark</h3>
+                        <span class="company-category">CMS Phone Call Audits</span>
+                    </div>
+                    <a href="https://www.bestmark.com/become-a-mystery-shopper/" target="_blank" class="company-website">https://www.bestmark.com/become-a-mystery-shopper/</a>
+                    <p class="company-description">BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Sinclair Customer Metrics</h3>
+                        <span class="company-category">CMS Phone Call Audits</span>
+                    </div>
+                    
+                    <p class="company-description">Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Market Force Information</h3>
+                        <span class="company-category">CMS Phone Call Audits</span>
+                    </div>
+                    <a href="https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/" target="_blank" class="company-website">https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/</a>
+                    <p class="company-description">Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Second To None</h3>
+                        <span class="company-category">CMS Appointments and Events Audits</span>
+                    </div>
+                    <a href="https://www.second-to-none.com/texas-mystery-shopper-jobs/" target="_blank" class="company-website">https://www.second-to-none.com/texas-mystery-shopper-jobs/</a>
+                    <p class="company-description">Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Ellis Mystery Shoppers</h3>
+                        <span class="company-category">CMS Appointments and Events Audits</span>
+                    </div>
+                    <a href="https://ellismysteryshopperjobs.com/" target="_blank" class="company-website">https://ellismysteryshopperjobs.com/</a>
+                    <p class="company-description">Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">all 50 states</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">BestMark</h3>
+                        <span class="company-category">CMS Appointments and Events Audits</span>
+                    </div>
+                    <a href="https://www.bestmark.com/become-a-mystery-shopper/" target="_blank" class="company-website">https://www.bestmark.com/become-a-mystery-shopper/</a>
+                    <p class="company-description">BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Sinclair Customer Metrics</h3>
+                        <span class="company-category">CMS Appointments and Events Audits</span>
+                    </div>
+                    
+                    <p class="company-description">Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Market Force Information</h3>
+                        <span class="company-category">CMS Appointments and Events Audits</span>
+                    </div>
+                    <a href="https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/" target="_blank" class="company-website">https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/</a>
+                    <p class="company-description">Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Second To None</h3>
+                        <span class="company-category">Merchandising Audits</span>
+                    </div>
+                    <a href="https://www.second-to-none.com/texas-mystery-shopper-jobs/" target="_blank" class="company-website">https://www.second-to-none.com/texas-mystery-shopper-jobs/</a>
+                    <p class="company-description">Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Ellis Mystery Shoppers</h3>
+                        <span class="company-category">Merchandising Audits</span>
+                    </div>
+                    <a href="https://ellismysteryshopperjobs.com/" target="_blank" class="company-website">https://ellismysteryshopperjobs.com/</a>
+                    <p class="company-description">Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">all 50 states</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">BestMark</h3>
+                        <span class="company-category">Merchandising Audits</span>
+                    </div>
+                    <a href="https://www.bestmark.com/become-a-mystery-shopper/" target="_blank" class="company-website">https://www.bestmark.com/become-a-mystery-shopper/</a>
+                    <p class="company-description">BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Sinclair Customer Metrics</h3>
+                        <span class="company-category">Merchandising Audits</span>
+                    </div>
+                    
+                    <p class="company-description">Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Market Force Information</h3>
+                        <span class="company-category">Merchandising Audits</span>
+                    </div>
+                    <a href="https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/" target="_blank" class="company-website">https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/</a>
+                    <p class="company-description">Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Second To None</h3>
+                        <span class="company-category">Marketing Audits</span>
+                    </div>
+                    <a href="https://www.second-to-none.com/texas-mystery-shopper-jobs/" target="_blank" class="company-website">https://www.second-to-none.com/texas-mystery-shopper-jobs/</a>
+                    <p class="company-description">Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Ellis Mystery Shoppers</h3>
+                        <span class="company-category">Marketing Audits</span>
+                    </div>
+                    <a href="https://ellismysteryshopperjobs.com/" target="_blank" class="company-website">https://ellismysteryshopperjobs.com/</a>
+                    <p class="company-description">Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">all 50 states</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">BestMark</h3>
+                        <span class="company-category">Marketing Audits</span>
+                    </div>
+                    <a href="https://www.bestmark.com/become-a-mystery-shopper/" target="_blank" class="company-website">https://www.bestmark.com/become-a-mystery-shopper/</a>
+                    <p class="company-description">BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Sinclair Customer Metrics</h3>
+                        <span class="company-category">Marketing Audits</span>
+                    </div>
+                    
+                    <p class="company-description">Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Market Force Information</h3>
+                        <span class="company-category">Marketing Audits</span>
+                    </div>
+                    <a href="https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/" target="_blank" class="company-website">https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/</a>
+                    <p class="company-description">Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Second To None</h3>
+                        <span class="company-category">Mystery Shops</span>
+                    </div>
+                    <a href="https://www.second-to-none.com/texas-mystery-shopper-jobs/" target="_blank" class="company-website">https://www.second-to-none.com/texas-mystery-shopper-jobs/</a>
+                    <p class="company-description">Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Ellis Mystery Shoppers</h3>
+                        <span class="company-category">Mystery Shops</span>
+                    </div>
+                    <a href="https://ellismysteryshopperjobs.com/" target="_blank" class="company-website">https://ellismysteryshopperjobs.com/</a>
+                    <p class="company-description">Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">all 50 states</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">BestMark</h3>
+                        <span class="company-category">Mystery Shops</span>
+                    </div>
+                    <a href="https://www.bestmark.com/become-a-mystery-shopper/" target="_blank" class="company-website">https://www.bestmark.com/become-a-mystery-shopper/</a>
+                    <p class="company-description">BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Sinclair Customer Metrics</h3>
+                        <span class="company-category">Mystery Shops</span>
+                    </div>
+                    
+                    <p class="company-description">Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Market Force Information</h3>
+                        <span class="company-category">Mystery Shops</span>
+                    </div>
+                    <a href="https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/" target="_blank" class="company-website">https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/</a>
+                    <p class="company-description">Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge likely">Likely</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Foley</h3>
+                        <span class="company-category">I-9 Verification Services</span>
+                    </div>
+                    <a href="https://vendordirectory.shrm.org/company/845978/foley" target="_blank" class="company-website">https://vendordirectory.shrm.org/company/845978/foley</a>
+                    <p class="company-description">Good Egg stands as a leader in delivering I-9 Verification services, offering comprehensive employment and license verifications alongside advanced personal data checks. Merging speed with precision, our solution incorporates efficient mobile-verification processes, consent-based SSN verification, E-Verify, and Electronic I-9. Good Egg ensures veracity in your workforce by verifying US work eligibility and providing alerts for expiring documents, maintaining legal compliance, and reducing the potential risk of fraud.</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge unknown">Unverified</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Chane Solutions</h3>
+                        <span class="company-category">I-9 Verification Services</span>
+                    </div>
+                    <a href="https://vendordirectory.shrm.org/company/835267/chane-solutions" target="_blank" class="company-website">https://vendordirectory.shrm.org/company/835267/chane-solutions</a>
+                    <p class="company-description">Chane Solutions is an Accredited Background Screening provider, offering services in the US and 200+ countries. Chane provides criminal checks, drug testing, verifications and occupational health screening services. Our screening platform is simple, fast and easy. Chane provides exceptional...</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge unknown">Unverified</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">CNet Technologies</h3>
+                        <span class="company-category">I-9 Verification Services</span>
+                    </div>
+                    <a href="https://vendordirectory.shrm.org/company/928539/cnet-technologies" target="_blank" class="company-website">https://vendordirectory.shrm.org/company/928539/cnet-technologies</a>
+                    <p class="company-description">In today’s highly litigious corporate environment, background screening companies seem to be popping up everywhere you look. Now, more than ever, trust must be at the core of any professional relationship. At CNet we are not just a background screening company; we’re a long term partner in your...</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge unknown">Unverified</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Elevated Background Checks</h3>
+                        <span class="company-category">I-9 Verification Services</span>
+                    </div>
+                    <a href="https://vendordirectory.shrm.org/company/922891/elevated-background-checks" target="_blank" class="company-website">https://vendordirectory.shrm.org/company/922891/elevated-background-checks</a>
+                    <p class="company-description">Elevated Check was organized on a foundation of top management with expertise in Human Resources, Staffing, General Administration, Employment Screening, Telecommunication and Software industries. Elevated Check has over 25 years of combined experience in Employment Screening, Human Resources...</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge unknown">Unverified</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div><div class="company-card">
+                    <div class="company-header">
+                        <h3 class="company-name">Checkr</h3>
+                        <span class="company-category">I-9 Verification Services</span>
+                    </div>
+                    <a href="https://vendordirectory.shrm.org/company/822198/checkr" target="_blank" class="company-website">https://vendordirectory.shrm.org/company/822198/checkr</a>
+                    <p class="company-description">Checkr provides unparalleled I-9 Verification Services, with a focus on helping enterprises gain efficiency with streamlined pre-employment screenings tracked via a single, secure dashboard. Our comprehensive suite includes automated I-9 tasks, E-Verify integrations, and a self-service feature allowing for same-day ordering and verification, all of which emphasize accuracy and compliance. As a reliable I-9 Verification Provider, Checkr bridges the gap between regulatory adherence and effective hiring, ensuring eligibility confirmation that sets the stage for a fruitful onboarding experience.</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge unknown">Unverified</span>
+                        <span class="service-area">National</span>
+                    </div>
+                </div></div>
+        </div>
+    </div>
+    
+    <script>
+        // Dashboard Data
+        const dashboardData = {"categories": ["Vehicle Repossession Lot Inspections", "Occupancy Verifications", "Loss Control Inspectors", "OnSite Inspection Vendors", "Virtual Inspections", "FHA Lender Inspections", "CMS Phone Call Audits", "CMS Appointments and Events Audits", "Merchandising Audits", "Marketing Audits", "Mystery Shops", "I-9 Verification Services"], "company_counts": [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 37], "contractor_counts": [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 11], "companies": {"Vehicle Repossession Lot Inspections": [{"name": "Second To None", "website": "https://www.second-to-none.com/texas-mystery-shopper-jobs/", "hires_contractors": "Likely", "service_area": "National", "description": "Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling"}, {"name": "Ellis Mystery Shoppers", "website": "https://ellismysteryshopperjobs.com/", "hires_contractors": "Likely", "service_area": "all 50 states", "description": "Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working"}, {"name": "BestMark", "website": "https://www.bestmark.com/become-a-mystery-shopper/", "hires_contractors": "Likely", "service_area": "National", "description": "BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling"}, {"name": "Sinclair Customer Metrics", "website": "", "hires_contractors": "Likely", "service_area": "National", "description": "Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping"}, {"name": "Market Force Information", "website": "https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/", "hires_contractors": "Likely", "service_area": "National", "description": "Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available"}], "Occupancy Verifications": [{"name": "Second To None", "website": "https://www.second-to-none.com/texas-mystery-shopper-jobs/", "hires_contractors": "Likely", "service_area": "National", "description": "Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling"}, {"name": "Ellis Mystery Shoppers", "website": "https://ellismysteryshopperjobs.com/", "hires_contractors": "Likely", "service_area": "all 50 states", "description": "Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working"}, {"name": "BestMark", "website": "https://www.bestmark.com/become-a-mystery-shopper/", "hires_contractors": "Likely", "service_area": "National", "description": "BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling"}, {"name": "Sinclair Customer Metrics", "website": "", "hires_contractors": "Likely", "service_area": "National", "description": "Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping"}, {"name": "Market Force Information", "website": "https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/", "hires_contractors": "Likely", "service_area": "National", "description": "Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available"}], "Loss Control Inspectors": [{"name": "Second To None", "website": "https://www.second-to-none.com/texas-mystery-shopper-jobs/", "hires_contractors": "Likely", "service_area": "National", "description": "Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling"}, {"name": "Ellis Mystery Shoppers", "website": "https://ellismysteryshopperjobs.com/", "hires_contractors": "Likely", "service_area": "all 50 states", "description": "Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working"}, {"name": "BestMark", "website": "https://www.bestmark.com/become-a-mystery-shopper/", "hires_contractors": "Likely", "service_area": "National", "description": "BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling"}, {"name": "Sinclair Customer Metrics", "website": "", "hires_contractors": "Likely", "service_area": "National", "description": "Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping"}, {"name": "Market Force Information", "website": "https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/", "hires_contractors": "Likely", "service_area": "National", "description": "Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available"}], "OnSite Inspection Vendors": [{"name": "Second To None", "website": "https://www.second-to-none.com/texas-mystery-shopper-jobs/", "hires_contractors": "Likely", "service_area": "National", "description": "Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling"}, {"name": "Ellis Mystery Shoppers", "website": "https://ellismysteryshopperjobs.com/", "hires_contractors": "Likely", "service_area": "all 50 states", "description": "Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working"}, {"name": "BestMark", "website": "https://www.bestmark.com/become-a-mystery-shopper/", "hires_contractors": "Likely", "service_area": "National", "description": "BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling"}, {"name": "Sinclair Customer Metrics", "website": "", "hires_contractors": "Likely", "service_area": "National", "description": "Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping"}, {"name": "Market Force Information", "website": "https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/", "hires_contractors": "Likely", "service_area": "National", "description": "Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available"}], "Virtual Inspections": [{"name": "Second To None", "website": "https://www.second-to-none.com/texas-mystery-shopper-jobs/", "hires_contractors": "Likely", "service_area": "National", "description": "Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling"}, {"name": "Ellis Mystery Shoppers", "website": "https://ellismysteryshopperjobs.com/", "hires_contractors": "Likely", "service_area": "all 50 states", "description": "Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working"}, {"name": "BestMark", "website": "https://www.bestmark.com/become-a-mystery-shopper/", "hires_contractors": "Likely", "service_area": "National", "description": "BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling"}, {"name": "Sinclair Customer Metrics", "website": "", "hires_contractors": "Likely", "service_area": "National", "description": "Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping"}, {"name": "Market Force Information", "website": "https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/", "hires_contractors": "Likely", "service_area": "National", "description": "Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available"}], "FHA Lender Inspections": [{"name": "Second To None", "website": "https://www.second-to-none.com/texas-mystery-shopper-jobs/", "hires_contractors": "Likely", "service_area": "National", "description": "Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling"}, {"name": "Ellis Mystery Shoppers", "website": "https://ellismysteryshopperjobs.com/", "hires_contractors": "Likely", "service_area": "all 50 states", "description": "Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working"}, {"name": "BestMark", "website": "https://www.bestmark.com/become-a-mystery-shopper/", "hires_contractors": "Likely", "service_area": "National", "description": "BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling"}, {"name": "Sinclair Customer Metrics", "website": "", "hires_contractors": "Likely", "service_area": "National", "description": "Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping"}, {"name": "Market Force Information", "website": "https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/", "hires_contractors": "Likely", "service_area": "National", "description": "Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available"}], "CMS Phone Call Audits": [{"name": "Second To None", "website": "https://www.second-to-none.com/texas-mystery-shopper-jobs/", "hires_contractors": "Likely", "service_area": "National", "description": "Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling"}, {"name": "Ellis Mystery Shoppers", "website": "https://ellismysteryshopperjobs.com/", "hires_contractors": "Likely", "service_area": "all 50 states", "description": "Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working"}, {"name": "BestMark", "website": "https://www.bestmark.com/become-a-mystery-shopper/", "hires_contractors": "Likely", "service_area": "National", "description": "BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling"}, {"name": "Sinclair Customer Metrics", "website": "", "hires_contractors": "Likely", "service_area": "National", "description": "Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping"}, {"name": "Market Force Information", "website": "https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/", "hires_contractors": "Likely", "service_area": "National", "description": "Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available"}], "CMS Appointments and Events Audits": [{"name": "Second To None", "website": "https://www.second-to-none.com/texas-mystery-shopper-jobs/", "hires_contractors": "Likely", "service_area": "National", "description": "Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling"}, {"name": "Ellis Mystery Shoppers", "website": "https://ellismysteryshopperjobs.com/", "hires_contractors": "Likely", "service_area": "all 50 states", "description": "Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working"}, {"name": "BestMark", "website": "https://www.bestmark.com/become-a-mystery-shopper/", "hires_contractors": "Likely", "service_area": "National", "description": "BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling"}, {"name": "Sinclair Customer Metrics", "website": "", "hires_contractors": "Likely", "service_area": "National", "description": "Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping"}, {"name": "Market Force Information", "website": "https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/", "hires_contractors": "Likely", "service_area": "National", "description": "Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available"}], "Merchandising Audits": [{"name": "Second To None", "website": "https://www.second-to-none.com/texas-mystery-shopper-jobs/", "hires_contractors": "Likely", "service_area": "National", "description": "Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling"}, {"name": "Ellis Mystery Shoppers", "website": "https://ellismysteryshopperjobs.com/", "hires_contractors": "Likely", "service_area": "all 50 states", "description": "Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working"}, {"name": "BestMark", "website": "https://www.bestmark.com/become-a-mystery-shopper/", "hires_contractors": "Likely", "service_area": "National", "description": "BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling"}, {"name": "Sinclair Customer Metrics", "website": "", "hires_contractors": "Likely", "service_area": "National", "description": "Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping"}, {"name": "Market Force Information", "website": "https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/", "hires_contractors": "Likely", "service_area": "National", "description": "Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available"}], "Marketing Audits": [{"name": "Second To None", "website": "https://www.second-to-none.com/texas-mystery-shopper-jobs/", "hires_contractors": "Likely", "service_area": "National", "description": "Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling"}, {"name": "Ellis Mystery Shoppers", "website": "https://ellismysteryshopperjobs.com/", "hires_contractors": "Likely", "service_area": "all 50 states", "description": "Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working"}, {"name": "BestMark", "website": "https://www.bestmark.com/become-a-mystery-shopper/", "hires_contractors": "Likely", "service_area": "National", "description": "BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling"}, {"name": "Sinclair Customer Metrics", "website": "", "hires_contractors": "Likely", "service_area": "National", "description": "Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping"}, {"name": "Market Force Information", "website": "https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/", "hires_contractors": "Likely", "service_area": "National", "description": "Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available"}], "Mystery Shops": [{"name": "Second To None", "website": "https://www.second-to-none.com/texas-mystery-shopper-jobs/", "hires_contractors": "Likely", "service_area": "National", "description": "Second To None has been in operation for over 30 years and is recognized for its A+ rating from the Better Business Bureau. They hire independent contractors for mystery shopping assignments across various sectors, including retail, restaurants, healthcare, and more. The application process is straightforward and free, allowing individuals to create a shopper account on their website. Shoppers can choose assignments based on their availability, providing flexibility in scheduling"}, {"name": "Ellis Mystery Shoppers", "website": "https://ellismysteryshopperjobs.com/", "hires_contractors": "Likely", "service_area": "all 50 states", "description": "Founded in 1984, Ellis Mystery Shoppers specializes in apartment mystery shopping across all 50 states. They have completed over 600,000 shops and offer various types of assignments, including onsite evaluations and virtual tours. Interested individuals must complete an online registration and independent contractor agreement to start working"}, {"name": "BestMark", "website": "https://www.bestmark.com/become-a-mystery-shopper/", "hires_contractors": "Likely", "service_area": "National", "description": "BestMark is one of the largest mystery shopping companies in the U.S. and operates as a network of independent contractors. They provide opportunities for mystery shopping, intercept interviews, and compliance audits. The application process is free, and successful candidates are typically detail-oriented and able to follow specific client requirements. BestMark offers flexible scheduling"}, {"name": "Sinclair Customer Metrics", "website": "", "hires_contractors": "Likely", "service_area": "National", "description": "Sinclair specializes in sectors such as banking, retail, and restaurants. They offer a free registration process and pay contractors via check once a month after the last completed assignment. This company is noted for its straightforward approach to mystery shopping"}, {"name": "Market Force Information", "website": "https://www.thepennyhoarder.com/make-money/best-mystery-shopping-companies-to-work/", "hires_contractors": "Likely", "service_area": "National", "description": "Market Force works with a diverse range of industries, including health and wellness. They provide a free registration process and pay contractors via direct deposit on a monthly basis. This company is recognized for its extensive network and variety of assignments available"}], "I-9 Verification Services": [{"name": "Foley", "website": "https://vendordirectory.shrm.org/company/845978/foley", "hires_contractors": "Unverified", "service_area": "National", "description": "Good Egg stands as a leader in delivering I-9 Verification services, offering comprehensive employment and license verifications alongside advanced personal data checks. Merging speed with precision, our solution incorporates efficient mobile-verification processes, consent-based SSN verification, E-Verify, and Electronic I-9. Good Egg ensures veracity in your workforce by verifying US work eligibility and providing alerts for expiring documents, maintaining legal compliance, and reducing the potential risk of fraud."}, {"name": "Chane Solutions", "website": "https://vendordirectory.shrm.org/company/835267/chane-solutions", "hires_contractors": "Unverified", "service_area": "National", "description": "Chane Solutions is an Accredited Background Screening provider, offering services in the US and 200+ countries. Chane provides criminal checks, drug testing, verifications and occupational health screening services. Our screening platform is simple, fast and easy. Chane provides exceptional..."}, {"name": "CNet Technologies", "website": "https://vendordirectory.shrm.org/company/928539/cnet-technologies", "hires_contractors": "Unverified", "service_area": "National", "description": "In today\u2019s highly litigious corporate environment, background screening companies seem to be popping up everywhere you look. Now, more than ever, trust must be at the core of any professional relationship. At CNet we are not just a background screening company; we\u2019re a long term partner in your..."}, {"name": "Elevated Background Checks", "website": "https://vendordirectory.shrm.org/company/922891/elevated-background-checks", "hires_contractors": "Unverified", "service_area": "National", "description": "Elevated Check was organized on a foundation of top management with expertise in Human Resources, Staffing, General Administration, Employment Screening, Telecommunication and Software industries. Elevated Check has over 25 years of combined experience in Employment Screening, Human Resources..."}, {"name": "Checkr", "website": "https://vendordirectory.shrm.org/company/822198/checkr", "hires_contractors": "Unverified", "service_area": "National", "description": "Checkr provides unparalleled I-9 Verification Services, with a focus on helping enterprises gain efficiency with streamlined pre-employment screenings tracked via a single, secure dashboard. Our comprehensive suite includes automated I-9 tasks, E-Verify integrations, and a self-service feature allowing for same-day ordering and verification, all of which emphasize accuracy and compliance. As a reliable I-9 Verification Provider, Checkr bridges the gap between regulatory adherence and effective hiring, ensuring eligibility confirmation that sets the stage for a fruitful onboarding experience."}]}};
+        
+        // Update stats
+        const totalCompanies = dashboardData.company_counts.reduce((sum, count) => sum + count, 0);
+        const totalCategories = dashboardData.categories.length;
+        const totalContractors = dashboardData.contractor_counts.reduce((sum, count) => sum + count, 0);
+        const contractorPercentage = totalCompanies > 0 ? Math.round((totalContractors / totalCompanies) * 100) : 0;
+        
+        document.getElementById('total-companies').textContent = totalCompanies;
+        document.getElementById('total-categories').textContent = totalCategories;
+        document.getElementById('contractor-percentage').textContent = contractorPercentage + '%';
+        
+        // Create charts
+        const categoriesPieCtx = document.getElementById('categoriesPieChart').getContext('2d');
+        const companyCtx = document.getElementById('companiesChart').getContext('2d');
+        const contractorCtx = document.getElementById('contractorsChart').getContext('2d');
+        const opportunitiesCtx = document.getElementById('opportunitiesChart').getContext('2d');
+        
+        // Generate colors for pie chart
+        function generateColors(count) {
+            const colors = [];
+            const backgroundColors = [];
+            const borderColors = [];
+            
+            for (let i = 0; i < count; i++) {
+                const hue = (i * 137.5) % 360; // Use golden angle approximation for nice distribution
+                const saturation = 70;
+                const lightness = 65;
+                
+                const color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+                const borderColor = `hsl(${hue}, ${saturation}%, ${lightness - 15}%)`;
+                
+                backgroundColors.push(color);
+                borderColors.push(borderColor);
+            }
+            
+            return { backgroundColors, borderColors };
+        }
+        
+        // Create categories pie chart
+        const { backgroundColors, borderColors } = generateColors(dashboardData.categories.length);
+        
+        // Calculate percentage for each category based on company counts
+        const categoryPercentages = dashboardData.company_counts.map(count => 
+            totalCompanies > 0 ? Math.round((count / totalCompanies) * 100) : 0
+        );
+        
+        // Categories Pie Chart
+        new Chart(categoriesPieCtx, {
+            type: 'pie',
+            data: {
+                labels: dashboardData.categories,
+                datasets: [{
+                    data: dashboardData.company_counts,
+                    backgroundColor: backgroundColors,
+                    borderColor: borderColors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            boxWidth: 12,
+                            padding: 10,
+                            font: {
+                                size: 10
+                            }
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.raw || 0;
+                                const percentage = categoryPercentages[context.dataIndex] || 0;
+                                return `${label}: ${value} companies (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Companies by category chart
+        new Chart(companyCtx, {
+            type: 'bar',
+            data: {
+                labels: dashboardData.categories,
+                datasets: [{
+                    label: 'Number of Companies',
+                    data: dashboardData.company_counts,
+                    backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                    borderColor: 'rgba(52, 152, 219, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+        
+        // Contractors by category chart
+        new Chart(contractorCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Hires Contractors', 'Contractor Status Unknown'],
+                datasets: [{
+                    data: [totalContractors, totalCompanies - totalContractors],
+                    backgroundColor: ['rgba(39, 174, 96, 0.7)', 'rgba(189, 195, 199, 0.7)'],
+                    borderColor: ['rgba(39, 174, 96, 1)', 'rgba(189, 195, 199, 1)'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+        
+        // Opportunities chart (comparing total vs hiring contractors)
+        new Chart(opportunitiesCtx, {
+            type: 'bar',
+            data: {
+                labels: dashboardData.categories,
+                datasets: [
+                    {
+                        label: 'Total Companies',
+                        data: dashboardData.company_counts,
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)',
+                        borderColor: 'rgba(52, 152, 219, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Hires Contractors',
+                        data: dashboardData.contractor_counts,
+                        backgroundColor: 'rgba(39, 174, 96, 0.7)',
+                        borderColor: 'rgba(39, 174, 96, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+        
+        // Populate category filter
+        const categoryFilter = document.getElementById('category-filter');
+        dashboardData.categories.forEach(category => {
+            const option = document.createElement('option');
+            option.value = category;
+            option.textContent = category;
+            categoryFilter.appendChild(option);
+        });
+        
+        // Function to render company cards
+        function renderCompanies(category = 'all', contractorStatus = 'all', searchTerm = '') {
+            const companyList = document.getElementById('company-list');
+            companyList.innerHTML = '';
+            
+            let visibleCompanies = [];
+            
+            // Gather companies based on filters
+            if (category === 'all') {
+                // Get companies from all categories
+                Object.entries(dashboardData.companies).forEach(([cat, companies]) => {
+                    companies.forEach(company => {
+                        // Add category to each company object
+                        visibleCompanies.push({...company, category: cat});
+                    });
+                });
+            } else {
+                // Get companies from selected category
+                const companies = dashboardData.companies[category] || [];
+                companies.forEach(company => {
+                    visibleCompanies.push({...company, category});
+                });
+            }
+            
+            // Filter by contractor status
+            if (contractorStatus !== 'all') {
+                const statusValue = contractorStatus === 'yes' ? 'Yes' : 'Unknown';
+                visibleCompanies = visibleCompanies.filter(company => 
+                    company.hires_contractors.includes(statusValue));
+            }
+            
+            // Filter by search term
+            if (searchTerm) {
+                const term = searchTerm.toLowerCase();
+                visibleCompanies = visibleCompanies.filter(company => 
+                    company.name.toLowerCase().includes(term) || 
+                    company.description.toLowerCase().includes(term));
+            }
+            
+            // Display companies or no results message
+            if (visibleCompanies.length === 0) {
+                companyList.innerHTML = `<div class="no-results">No companies match your filters. Try adjusting your search criteria.</div>`;
+                return;
+            }
+            
+            // Create company cards
+            visibleCompanies.forEach(company => {
+                const card = document.createElement('div');
+                card.className = 'company-card';
+                
+                let contractorBadgeClass = 'unknown';
+                if (company.hires_contractors.includes('Yes') || company.hires_contractors.includes('Likely')) {
+                    contractorBadgeClass = company.hires_contractors.includes('Yes') ? 'yes' : 'likely';
+                }
+                
+                card.innerHTML = `
+                    <div class="company-header">
+                        <h3 class="company-name">${company.name}</h3>
+                        <span class="company-category">${company.category}</span>
+                    </div>
+                    ${company.website ? `<a href="${company.website}" target="_blank" class="company-website">${company.website}</a>` : ''}
+                    <p class="company-description">${company.description}</p>
+                    <div class="company-footer">
+                        <span class="contractor-badge ${contractorBadgeClass}">${company.hires_contractors}</span>
+                        <span class="service-area">${company.service_area}</span>
+                    </div>
+                `;
+                
+                companyList.appendChild(card);
+            });
+        }
+        
+        // Event listeners for filters
+        document.getElementById('category-filter').addEventListener('change', function() {
+            const category = this.value;
+            const contractorStatus = document.getElementById('contractor-filter').value;
+            const searchTerm = document.getElementById('company-search').value;
+            renderCompanies(category, contractorStatus, searchTerm);
+        });
+        
+        document.getElementById('contractor-filter').addEventListener('change', function() {
+            const category = document.getElementById('category-filter').value;
+            const contractorStatus = this.value;
+            const searchTerm = document.getElementById('company-search').value;
+            renderCompanies(category, contractorStatus, searchTerm);
+        });
+        
+        document.getElementById('company-search').addEventListener('input', function() {
+            const category = document.getElementById('category-filter').value;
+            const contractorStatus = document.getElementById('contractor-filter').value;
+            const searchTerm = this.value;
+            renderCompanies(category, contractorStatus, searchTerm);
+        });
+        
+        // Initial render
+        renderCompanies();
+    </script>
+
+
+</body></html>
+
