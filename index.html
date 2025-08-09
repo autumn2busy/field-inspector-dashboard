@@ -320,18 +320,18 @@ body {
     <script>
         // ====== CONFIGURATION ======
         // Replace this with your Google Sheet ID
-        const SHEET_ID = "1E9Uu2I9cUGQjXqJ1hFX2LShOArmgQiPhMMECaj7BYz0";
+        const googleSheetID = "1E9Uu2I9cUGQjXqJ1hFX2LShOArmgQiPhMMECaj7BYz0";
         // Name of the sheet tab (usually "Sheet1")
         const SHEET_TAB_NAME = "Sheet1";
         // ====== END CONFIGURATION ======
-        
+    
         document.addEventListener('DOMContentLoaded', function() {
             fetchJobListings();
         });
         
         function fetchJobListings() {
             // Fetch data from Google Sheets
-            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${SHEET_TAB_NAME}`;
+            const url = `https://docs.google.com/spreadsheets/d/${googleSheetID}/gviz/tq?tqx=out:json&sheet=${SHEET_TAB_NAME}`;
             
             fetch(url)
                 .then(response => response.text())
