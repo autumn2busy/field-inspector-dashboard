@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Inspector Job Listings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --light-bg: #f8f9fa;
+            --dark-text: #333;
+            --light-text: #666;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--dark-text);
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1, h2 {
+            color: var(--primary-color);
+            text-align: center;
+        }
+        
+        .job-carousel {
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .job-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            padding: 20px;
+            margin: 10px;
+            height: 380px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .job-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+        
+        .job-company {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+        
+        .job-location {
+            font-size: 14px;
+            color: var(--light-text);
+            margin-bottom: 15px;
+        }
+        
+        .job-description {
+            font-size: 14px;
+            color: var(--dark-text);
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+        
+        .job-requirements {
+            font-size: 13px;
+            color: var(--light-text);
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        .job-compensation {
+            font-size: 15px;
+            font-weight: 500;
+            color: #27ae60;
+            margin-bottom: 15px;
+        }
+        
+        .apply-button {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        
+        .apply-button:hover {
+            background-color: #2980b9;
+            color: white;
+        }
+        
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            z-index: 100;
+        }
+        
+        .prev-arrow {
+            left: -20px;
+        }
+        
+        .next-arrow {
+            right: -20px;
+        }
+        
+        .carousel-indicator {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 50%;
+            margin: 0 5px;
+            cursor: pointer;
+        }
+        
+        .dot.active {
+            background-color: var(--accent-color);
+        }
+        
+        .carousel-container {
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+        
+        .carousel-slide {
+            flex: 0 0 calc(33.333% - 20px);
+            min-width: calc(33.333% - 20px);
+            box-sizing: border-box;
+        }
+        
+        @media (max-width: 992px) {
+            .carousel-slide {
+                flex: 0 0 calc(50% - 20px);
+                min-width: calc(50% - 20px);
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .carousel-slide {
+                flex: 0 0 calc(100% - 20px);
+                min-width: calc(100% - 20px);
+            }
+        }
+        
+        .header-section {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header-description {
+            max-width: 800px;
+            margin: 0 auto;
+            color: var(--light-text);
+            line-height: 1.6;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: var(--light-text);
+            font-size: 14px;
+        }
+        
+        .footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: var(--light-text);
+        }
+        
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            text-align: center;
+        }
+    
+body {
+    background-color: #f9f9f9;
+    background-image: 
+      linear-gradient(rgba(150, 150, 150, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(150, 150, 150, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: -1px -1px;
+}
+
+.container, .dashboard-container, .tracker-container, .job-carousel-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+</style>
+
+<style>
+    /* Additional scrolling styles */
+    html, body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .job-carousel-container {
+        height: auto;
+        min-height: 100%;
+        padding-bottom: 30px;
+    }
+
+body {
+    background-color: #f9f9f9;
+    background-image: 
+      linear-gradient(rgba(150, 150, 150, 0.1) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(150, 150, 150, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-position: -1px -1px;
+}
+
+.container, .dashboard-container, .tracker-container, .job-carousel-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-section">
+            <h1>Field Inspector Job Opportunities</h1>
+            <p class="header-description">
+                Browse current opportunities for independent contractors in the field inspection industry. 
+                These positions offer flexible scheduling and the ability to work independently across various inspection types.
+            </p>
+        </div>
+        
+        <div id="loading" class="loading">Loading job listings...</div>
+        <div id="error-container"></div>
+        
+        <div class="job-carousel" id="job-carousel" style="display: none;">
+            <div class="carousel-container">
+                <div class="carousel-track" id="carousel-track">
+                    <!-- Job listings will be dynamically inserted here -->
+                </div>
+            </div>
+            
+            <div class="carousel-arrow prev-arrow" id="prev-arrow">
+                &larr;
+            </div>
+            
+            <div class="carousel-arrow next-arrow" id="next-arrow">
+                &rarr;
+            </div>
+            
+            <div class="carousel-indicator" id="carousel-indicator">
+                <!-- Dots will be dynamically inserted here -->
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Last updated: <span id="last-updated">Loading...</span> | <a href="#" id="job-feed-link">Subscribe to Job Updates</a></p>
+        </div>
+    </div>
+    
+    <script>
+        // ====== CONFIGURATION ======
+        // Replace this with your Google Sheet ID
+        const googleSheetID = "1E9Uu2I9cUGQjXqJ1hFX2LShOArmgQiPhMMECaj7BYz0";
+        // Name of the sheet tab (usually "Sheet1")
+        const SHEET_TAB_NAME = "Sheet1";
+        // ====== END CONFIGURATION ======
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchJobListings();
+        });
+        
+        function fetchJobListings() {
+            // Fetch data from Google Sheets
+            const url = `https://docs.google.com/spreadsheets/d/${googleSheetID}/gviz/tq?tqx=out:json&sheet=${SHEET_TAB_NAME}`;
+            
+            fetch(url)
+                .then(response => response.text())
+                .then(data => {
+                    // Google's response has a prefix that needs to be removed
+                    const jsonData = JSON.parse(data.substring(47).slice(0, -2));
+                    const jobListings = parseGoogleSheetData(jsonData);
+                    
+                    if (jobListings.length > 0) {
+                        initializeCarousel(jobListings);
+                        document.getElementById('last-updated').textContent = new Date().toLocaleDateString();
+                        document.getElementById('loading').style.display = 'none';
+                        document.getElementById('job-carousel').style.display = 'block';
+                    } else {
+                        showError("No job listings found. Please check your Google Sheet.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching job listings:', error);
+                    showError("Failed to load job listings. Please check your Google Sheet ID and make sure it's publicly accessible.");
+                });
+        }
+        
+        function parseGoogleSheetData(data) {
+            const jobListings = [];
+            const rows = data.table.rows;
+            const headers = rows[0].c.map(col => col ? col.v : '');
+            
+            // Get column indices
+            const titleIndex = headers.indexOf('title');
+            const companyIndex = headers.indexOf('company');
+            const locationIndex = headers.indexOf('location');
+            const descriptionIndex = headers.indexOf('description');
+            const requirementsIndex = headers.indexOf('requirements');
+            const compensationIndex = headers.indexOf('compensation');
+            const urlIndex = headers.indexOf('url');
+            
+            // Check for required columns
+            if (titleIndex === -1 || companyIndex === -1 || urlIndex === -1) {
+                showError("Missing required columns in Google Sheet. Please ensure your sheet has title, company, and url columns.");
+                return [];
+            }
+            
+            // Skip header row
+            for (let i = 1; i < rows.length; i++) {
+                const row = rows[i].c;
+                
+                // Skip rows with empty title or company
+                if (!row[titleIndex] || !row[companyIndex]) continue;
+                
+                const job = {
+                    title: row[titleIndex] ? row[titleIndex].v : '',
+                    company: row[companyIndex] ? row[companyIndex].v : '',
+                    location: (locationIndex !== -1 && row[locationIndex]) ? row[locationIndex].v : 'Location not specified',
+                    description: (descriptionIndex !== -1 && row[descriptionIndex]) ? row[descriptionIndex].v : '',
+                    requirements: (requirementsIndex !== -1 && row[requirementsIndex]) ? row[requirementsIndex].v : '',
+                    compensation: (compensationIndex !== -1 && row[compensationIndex]) ? row[compensationIndex].v : 'Compensation not specified',
+                    url: row[urlIndex] ? row[urlIndex].v : '#'
+                };
+                
+                jobListings.push(job);
+            }
+            
+            return jobListings;
+        }
+        
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            const errorContainer = document.getElementById('error-container');
+            errorContainer.innerHTML = `<div class="error-message">${message}</div>`;
+        }
+        
+        function initializeCarousel(jobListings) {
+            const track = document.getElementById('carousel-track');
+            const prevArrow = document.getElementById('prev-arrow');
+            const nextArrow = document.getElementById('next-arrow');
+            const indicator = document.getElementById('carousel-indicator');
+            
+            // Determine how many slides to show based on screen width
+            let slidesToShow = window.innerWidth > 992 ? 3 : window.innerWidth > 576 ? 2 : 1;
+            let currentIndex = 0;
+            
+            // Create job cards
+            jobListings.forEach((job, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                
+                slide.innerHTML = `
+                    <div class="job-card">
+                        <h3 class="job-title">${job.title}</h3>
+                        <div class="job-company">${job.company}</div>
+                        <div class="job-location">${job.location}</div>
+                        <div class="job-description">${job.description}</div>
+                        <div class="job-requirements">${job.requirements}</div>
+                        <div class="job-compensation">${job.compensation}</div>
+                        <a href="${job.url}" target="_blank" class="apply-button">View Details</a>
+                    </div>
+                `;
+                
+                track.appendChild(slide);
+            });
+            
+            // Create indicator dots
+            const totalDots = Math.ceil(jobListings.length / slidesToShow);
+            for (let i = 0; i < totalDots; i++) {
+                const dot = document.createElement('span');
+                dot.className = i === 0 ? 'dot active' : 'dot';
+                dot.dataset.index = i;
+                dot.addEventListener('click', () => {
+                    goToSlide(i);
+                });
+                indicator.appendChild(dot);
+            }
+            
+            // Update carousel position
+            function updateCarousel() {
+                const slideWidth = track.querySelector('.carousel-slide').offsetWidth;
+                track.style.transform = `translateX(-${currentIndex * slidesToShow * slideWidth}px)`;
+                
+                // Update active dot
+                document.querySelectorAll('.dot').forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentIndex);
+                });
+            }
+            
+            // Go to specific slide
+            function goToSlide(index) {
+                const maxIndex = Math.ceil(jobListings.length / slidesToShow) - 1;
+                currentIndex = Math.max(0, Math.min(index, maxIndex));
+                updateCarousel();
+            }
+            
+            // Event listeners for arrows
+            prevArrow.addEventListener('click', () => {
+                goToSlide(currentIndex - 1);
+            });
+            
+            nextArrow.addEventListener('click', () => {
+                goToSlide(currentIndex + 1);
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                const newSlidesToShow = window.innerWidth > 992 ? 3 : window.innerWidth > 576 ? 2 : 1;
+                
+                if (newSlidesToShow !== slidesToShow) {
+                    slidesToShow = newSlidesToShow;
+                    
+                    // Recalculate and update indicator dots
+                    indicator.innerHTML = '';
+                    const totalDots = Math.ceil(jobListings.length / slidesToShow);
+                    for (let i = 0; i < totalDots; i++) {
+                        const dot = document.createElement('span');
+                        dot.className = i === currentIndex ? 'dot active' : 'dot';
+                        dot.dataset.index = i;
+                        dot.addEventListener('click', () => {
+                            goToSlide(i);
+                        });
+                        indicator.appendChild(dot);
+                    }
+                    
+                    // Ensure current index is valid
+                    const maxIndex = Math.ceil(jobListings.length / slidesToShow) - 1;
+                    currentIndex = Math.min(currentIndex, maxIndex);
+                    
+                    updateCarousel();
+                }
+            });
+            
+            // Initial update
+            updateCarousel();
+            
+            // Subscribe link (placeholder)
+            document.getElementById('job-feed-link').addEventListener('click', function(e) {
+                e.preventDefault();
+                alert('Coming soon: Job updates by email!');
+            });
+        }
+    </script>
+</body>
+</html>
